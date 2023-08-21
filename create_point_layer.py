@@ -16,7 +16,7 @@ def create_sample_feature_layer(gdb_path):
     )
     
     # Add fields: ID, Name, Description
-    arcpy.AddField_management(feature_class_path, "ID", "LONG")
+    arcpy.AddField_management(feature_class_path, "JobID", "LONG")
     arcpy.AddField_management(feature_class_path, "Name", "TEXT")
     arcpy.AddField_management(feature_class_path, "Description", "TEXT")
     
@@ -27,7 +27,21 @@ def create_sample_feature_layer(gdb_path):
     print(f"Sample feature layer 'SampleLayer' created in {gdb_path}.")
     return feature_class_path
 
+def update_sde(data, sde_path):
+    arcpy.env.workspace = sde_path # type: ignore
+    if isinstance(data, str):
+        data = int(data)
+    row_values = [(174.7762, -41.2865), data]
+    fc_list = arcpy.ListFeatureClasses()
+    fc_name = ""
+    for fc in fc_list: # type: ignore
+        fc_name = fc
+        desc = arcpy.Describe(fc_name)
+        print(desc.shapeType) # type: ignore
+    with arcpy.da.InsertCursor(fc_name, ["SHAPE@XY", "JobID"]) as cursor: # type: ignore
+        cursor.insertRow([(174.7762, -41.2865), data])
 gdb_dir = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\sample_gdb.gdb"
-create_sample_feature_layer(gdb_dir)
+sde_path = r"C:\Users\gisuser\Documents\ArcGIS\Projects\vtpk_mmpk_creation\GISDEV.sde"
+update_sde(4, sde_path)
     
     
