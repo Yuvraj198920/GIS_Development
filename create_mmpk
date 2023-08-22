@@ -47,12 +47,7 @@ def create_mmpk(argv):
     buffer = point.buffer(int(bufferSize)) # type: ignore
     dest_map = aprx.listMaps("Layers")[0] # type: ignore
 
-    arcpy.management.CreateMobileMapPackage(dest_map,  # type: ignore
-                                            outputFolder + jobID + ".mmpk", 
-                                            None,
-                                            buffer, "DEFAULT", "CLIP", "Title", 
-                                            "Summary", "description", "Tag", 
-                                            "Credit information", "Usage Limitation")
+    arcpy.management.CreateMobileMapPackage(dest_map, outputFolder + jobID + ".mmpk", None,buffer, "DEFAULT", "CLIP", "Title", "Summary", "description", "Tag", "Credit information", "Usage Limitation") # type: ignore
 
 def main():
     try:
@@ -74,7 +69,7 @@ def main():
                 print(f"Error: {e}")
                 break
     except Exception as ex:
-         # SendFileAsMail(sys.argv, traceback.format_exc())
+        SendFileAsMail(sys.argv, traceback.format_exc())
         raise
 
 
