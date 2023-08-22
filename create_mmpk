@@ -56,6 +56,10 @@ def create_mmpk(argv):
 
 def main():
     try:
+        # Check SDE connection first
+        if not check_sde_connection(workspace=sys.argv[5]): # type: ignore
+            raise Exception("Failed to connect to SDE. Exiting script.")
+        
         for i in range(MAX_RETRIES):
             try:
                 create_mmpk(sys.argv)
@@ -70,8 +74,9 @@ def main():
                 print(f"Error: {e}")
                 break
     except Exception as ex:
-        # SendFileAsMail(sys.argv, traceback.format_exc())
+         # SendFileAsMail(sys.argv, traceback.format_exc())
         raise
+
 
 if __name__ == "__main__":
     main()
