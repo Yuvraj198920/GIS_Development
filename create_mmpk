@@ -1,13 +1,30 @@
+import sys
+import traceback
 import arcpy
-from sys import argv
 import time
+# from SendLogEmail import SendFileAsMail
 
 # Constants
 WKID = 3414
 INITIAL_RETRY_DELAY = 5  # Initial delay of 5 seconds
-MAX_RETRIES = 5
+MAX_RETRIES = 5  # Maximum number of retries
 
-def create_mmpk():
+sys.path.append("C:\\Users\\Administrator\\AppData\\Local\\Programs\\ArcGIS\\Pro\\bin\\Python\\Lib\\site-packages")
+
+def check_sde_connection(sde_path):
+    try:
+        arcpy.env.workspace = sde_path # type: ignore
+        fds = arcpy.ListFeatureDatasets()  # type: ignore # Try listing feature datasets
+        if fds is not None:  # If the list is not empty or None, connection likely succeeded
+            return True
+        else:
+            print("Unable to connect to SDE or SDE is empty.")
+            return False
+    except Exception as e:
+        print(f"Error while connecting to SDE: {e}")
+        return False
+
+def create_mmpk(argv):
     script, jobID, bufferSize, outputFolder, project, workspace, gdbPath, layerFolderPath, jobLayer = argv
 
     x, y = (0, 1)
@@ -30,26 +47,31 @@ def create_mmpk():
     buffer = point.buffer(int(bufferSize)) # type: ignore
     dest_map = aprx.listMaps("Layers")[0] # type: ignore
 
-    arcpy.management.CreateMobileMapPackage(dest_map, # type: ignore
-                                            outputFolder + jobID + ".mmpk",
+    arcpy.management.CreateMobileMapPackage(dest_map,  # type: ignore
+                                            outputFolder + jobID + ".mmpk", 
                                             None,
-                                            buffer, "DEFAULT", "CLIP", "Title",
-                                            "Summary", "description", "Tag",
+                                            buffer, "DEFAULT", "CLIP", "Title", 
+                                            "Summary", "description", "Tag", 
                                             "Credit information", "Usage Limitation")
 
-for i in range(MAX_RETRIES):
+def main():
     try:
-        create_mmpk()
-        break  # Exit the loop if successful
+        for i in range(MAX_RETRIES):
+            try:
+                create_mmpk(sys.argv)
+                break
+            except IOError:  # Assuming IOError represents a network error; adjust as needed
+                if i == MAX_RETRIES - 1:
+                    raise
+                delay = INITIAL_RETRY_DELAY * (2 ** i)
+                print(f"Retrying in {delay} seconds due to network issue...")
+                time.sleep(delay)
+            except Exception as e:
+                print(f"Error: {e}")
+                break
+    except Exception as ex:
+        # SendFileAsMail(sys.argv, traceback.format_exc())
+        raise
 
-    except IOError:  # Catching network errors (this is a simplification)
-        print(f"Network error on attempt {i + 1}.")
-        if i == MAX_RETRIES - 1:  # On the last attempt, raise the exception
-            raise
-        delay = INITIAL_RETRY_DELAY * (2 ** i)  # Exponential backoff
-        print(f"Retrying in {delay} seconds due to network issue...")
-        time.sleep(delay)
-    
-    except Exception as e:  # Other non-network related errors
-        print(f"Error: {e}")
-        break  # Exit the loop and do not retry
+if __name__ == "__main__":
+    main()
