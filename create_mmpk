@@ -1,0 +1,55 @@
+import arcpy
+from sys import argv
+import time
+
+# Constants
+WKID = 3414
+INITIAL_RETRY_DELAY = 5  # Initial delay of 5 seconds
+MAX_RETRIES = 5
+
+def create_mmpk():
+    script, jobID, bufferSize, outputFolder, project, workspace, gdbPath, layerFolderPath, jobLayer = argv
+
+    x, y = (0, 1)
+    aprx = arcpy.mp.ArcGISProject(project)
+
+    arcpy.env.workspace = workspace # type: ignore
+    fdlist = arcpy.da.SearchCursor(jobLayer, ["SHAPE@XY"], '"AMS_ID" = \'{0}\''.format(jobID)) # type: ignore
+    for row in fdlist:
+        x, y = row[0]
+
+    esri_json = {
+        "x": x,
+        "y": y,
+        "spatialReference": {
+            "wkid": WKID
+        }
+    }
+
+    point = arcpy.AsShape(esri_json, True)
+    buffer = point.buffer(int(bufferSize)) # type: ignore
+    dest_map = aprx.listMaps("Layers")[0] # type: ignore
+
+    arcpy.management.CreateMobileMapPackage(dest_map, # type: ignore
+                                            outputFolder + jobID + ".mmpk",
+                                            None,
+                                            buffer, "DEFAULT", "CLIP", "Title",
+                                            "Summary", "description", "Tag",
+                                            "Credit information", "Usage Limitation")
+
+for i in range(MAX_RETRIES):
+    try:
+        create_mmpk()
+        break  # Exit the loop if successful
+
+    except IOError:  # Catching network errors (this is a simplification)
+        print(f"Network error on attempt {i + 1}.")
+        if i == MAX_RETRIES - 1:  # On the last attempt, raise the exception
+            raise
+        delay = INITIAL_RETRY_DELAY * (2 ** i)  # Exponential backoff
+        print(f"Retrying in {delay} seconds due to network issue...")
+        time.sleep(delay)
+    
+    except Exception as e:  # Other non-network related errors
+        print(f"Error: {e}")
+        break  # Exit the loop and do not retry

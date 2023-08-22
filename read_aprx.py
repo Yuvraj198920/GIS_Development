@@ -31,18 +31,18 @@ def create_mmpk(aprx_file, buffer_feature, dest_folder, id_value):
     return mmpk_path
 
 if __name__=='__main__':
-    aprx_file = sys.argv[1]
-    layer_name = sys.argv[2]
-    id_value = int(sys.argv[3])
-    connection_path = sys.argv[4]
-    dest_folder = sys.argv[5]
-    print(sys.argv)
+    # aprx_file = sys.argv[1]
+    # layer_name = sys.argv[2]
+    # id_value = int(sys.argv[3])
+    # connection_path = sys.argv[4]
+    # dest_folder = sys.argv[5]
+    # print(sys.argv)
 
-    # aprx_file = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\p30\Introducing_ArcGIS_Pro.aprx"
-    # layer_name = "SampleLayer"
-    # id_value = 3
-    # connection_path = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\sample_gdb.gdb"
-    # dest_folder = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\mmpk"
+    aprx_file = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\p30\Introducing_ArcGIS_Pro.aprx"
+    layer_name = "SampleLayer"
+    id_value = 3
+    connection_path = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\sample_gdb.gdb"
+    dest_folder = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\mmpk"
 
     try:
         point_geom = get_point_from_id(layer_name, id_value, connection_path) # type: ignore
