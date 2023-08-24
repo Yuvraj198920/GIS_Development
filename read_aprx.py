@@ -1,8 +1,21 @@
+import logging
 import arcpy
 import os
 import sys
 from timeit import timeit
 
+from arcpy_logger import ArcPyLogHandler
+
+logger = logging.getLogger("LoggerName")
+handler = ArcPyLogHandler(
+        "output_log.log",
+        maxBytes=1024 * 1024 * 2, #2MB log files
+        backupCount=10
+    )
+formatter = logging.Formatter("%(levelname)-8s %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
 # arcpy.env.overwriteOutput = True
 @timeit # type: ignore
 def get_point_from_id(layer_name, id_value, connection_path):
@@ -24,6 +37,9 @@ def create_mmpk(aprx_file, buffer_feature, dest_folder, id_value):
     map_obj.addDataFromPath(buffer_feature)
     mmpk_path = os.path.join(dest_folder, f"buffer_{id_value}.mmpk")
     if arcpy.Exists(mmpk_path):
+        print("arcpy message")
+        print(arcpy.GetMessage(1)) # type: ignore
+        # logger.debug(arcpy.GetMessage)
         print(f"The mmpk for {id_value} already exists.")
     else:
         arcpy.management.CreateMobileMapPackage(map_obj, mmpk_path) # type: ignore
@@ -37,7 +53,6 @@ if __name__=='__main__':
     # connection_path = sys.argv[4]
     # dest_folder = sys.argv[5]
     # print(sys.argv)
-
     aprx_file = r"C:\Users\gisuser\Documents\ArcGIS\Packages\Introducing_ArcGIS_Pro_7f7355\p30\Introducing_ArcGIS_Pro.aprx"
     layer_name = "SampleLayer"
     id_value = 3

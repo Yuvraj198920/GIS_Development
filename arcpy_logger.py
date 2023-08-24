@@ -26,3 +26,13 @@ class ArcPyLogHandler(logging.handlers.RotatingFileHandler):
 
         super(ArcPyLogHandler, self).emit(record)
 
+logger = logging.getLogger("LoggerName")
+handler = ArcPyLogHandler(
+        "output_log.log",
+        maxBytes=1024 * 1024 * 2, #2MB log files
+        backupCount=10
+    )
+formatter = logging.Formatter("%(levelname)-8s %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
