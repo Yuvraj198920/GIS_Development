@@ -2,7 +2,9 @@ import sys
 import traceback
 import arcpy
 import time
+import logging
 # from SendLogEmail import SendFileAsMail
+from arcpy_logger import ArcPyLogHandler
 
 # Constants
 WKID = 3414
@@ -18,7 +20,7 @@ def check_sde_connection(sde_path):
         if fds is not None:  # If the list is not empty or None, connection likely succeeded
             return True
         else:
-            print("Unable to connect to SDE or SDE is empty.")
+            
             return False
     except Exception as e:
         print(f"Error while connecting to SDE: {e}")
@@ -69,9 +71,20 @@ def main():
                 print(f"Error: {e}")
                 break
     except Exception as ex:
-        SendFileAsMail(sys.argv, traceback.format_exc())
+        # SendFileAsMail(sys.argv, traceback.format_exc())
         raise
 
 
 if __name__ == "__main__":
     main()
+    # Use the logger
+    logger = logging.getLogger("LoggerName")
+    handler = ArcPyLogHandler(
+        "output_log.log",
+        maxBytes=1024 * 1024 * 2, #2MB log files
+        backupCount=10
+    )
+    formatter = logging.Formatter("%(levelname)-8s %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
