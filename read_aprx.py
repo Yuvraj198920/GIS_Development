@@ -22,13 +22,16 @@ def get_point_from_id(layer_name, id_value, connection_path):
     arcpy.env.workspace = connection_path # type: ignore
     query = f"ID = {id_value}"
     with arcpy.da.SearchCursor(layer_name, ["SHAPE@"], where_clause = query) as cursor: # type: ignore
+        print(arcpy.GetMessages(0))
         for row in cursor:
             return row[0]
     return None
 
 @timeit # type: ignore
 def create_buffer(point_geom, buffer_distance=1000):
-    return point_geom.buffer(buffer_distance)
+    buf = point_geom.buffer(buffer_distance)
+    print(arcpy.GetMessages(0))
+    return buf
 
 @timeit # type: ignore
 def create_mmpk(aprx_file, buffer_feature, dest_folder, id_value):
@@ -37,12 +40,14 @@ def create_mmpk(aprx_file, buffer_feature, dest_folder, id_value):
     map_obj.addDataFromPath(buffer_feature)
     mmpk_path = os.path.join(dest_folder, f"buffer_{id_value}.mmpk")
     if arcpy.Exists(mmpk_path):
+        print(arcpy.GetMessages(0))
         print("arcpy message")
-        print(arcpy.GetMessage(1)) # type: ignore
+        print(arcpy.GetMessages(0)) # type: ignore
         # logger.debug(arcpy.GetMessage)
         print(f"The mmpk for {id_value} already exists.")
     else:
         arcpy.management.CreateMobileMapPackage(map_obj, mmpk_path) # type: ignore
+        print(arcpy.GetMessages(0))
 
     return mmpk_path
 
@@ -64,14 +69,17 @@ if __name__=='__main__':
         buffer_name = "test_buffer_1"
         buffer_path = os.path.join(connection_path, buffer_name)  # Assuming connection_path is the path to your GDB or SDE
         if arcpy.Exists(buffer_path):
+            print(arcpy.GetMessages(0))
             print(f"The buffer file for {buffer_name} already exists.")
         else:
             buff = create_buffer(point_geom, 100) # type: ignore
             arcpy.CopyFeatures_management(buff, buffer_path)
+            print(arcpy.GetMessages(0))
         create_mmpk(aprx_file, buffer_path, dest_folder, id_value) # type: ignore
+        print(arcpy.GetMessages(0))
 
     except arcpy.ExecuteError:
-        print(arcpy.GetMessage(2))
+        print(arcpy.GetMessages(0))
     
     except Exception as e:
         print(e)
