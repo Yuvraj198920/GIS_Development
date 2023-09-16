@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/GIS_Development/FileContentIndex
+/.vs/GIS_Development/v17
+/.vs/slnx.sqlite
+/.vs/tasks.vs.json
+/.vs/VSWorkspaceState.json
+/.vs/GIS_Development/config/applicationhost.config
