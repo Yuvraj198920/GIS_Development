@@ -1,0 +1,10 @@
+Install newer version of Material UI
+@material-ui/lab --> @mui/lab
+@material-ui/icons --> @mui/icons-material
+@material-ui --> @mui/material
+
+For maps related npm packages
+Google maps --> 1> @react-google-maps/api, google-map-react
+
+For API request --> Axios
+
