@@ -8,3 +8,6 @@ Google maps --> 1> @react-google-maps/api, google-map-react
 
 For API request --> Axios
 
+Stage 1:
+1. Create dummy components for Map, Header, List, PlaceDetails along with their css file
+2. Apply material ui styling
