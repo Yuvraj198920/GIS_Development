@@ -11,3 +11,7 @@ For API request --> Axios
 Stage 1:
 1. Create dummy components for Map, Header, List, PlaceDetails along with their css file
 2. Apply material ui styling
+
+Stage 2:
+1. Instead of using import { makeStyles } from "@mui/styles"
+ use import styled from '@emotion/styled' (https://stackoverflow.com/questions/72026275/uncaught-error-mui-makestyles-is-no-longer-exported-from)
