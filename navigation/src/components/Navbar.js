@@ -1,9 +1,10 @@
+import '../style.css'
 const Navbar = () => {
     return (
-        <nav className="navbar">
+        <nav className="nav">
             <a href="/" className="site-title">Site Name</a>
-            <ul className="">
-                <li>
+            <ul>
+                <li className='active'>
                     <a href="/pricing">Pricing</a>
                 </li>
                 <li>
