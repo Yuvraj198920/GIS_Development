@@ -4,7 +4,7 @@ import Map from "./components/Map/Map";
 import PlaceDetails from "./components/PlaceDetails/PlaceDetails";
 
 import { CssBaseline, Grid } from "@mui/material";
-
+const google = window.google;
 const App = () => {
   return (
     <>

@@ -5,7 +5,7 @@ import { AppBar, Toolbar, Typography, InputBase, Box } from '@mui/material';
 import { Search } from '@mui/icons-material';
 
 import useStyles from './styles';
-
+const google = window.google;
 const Header = () => {
     const classes = useStyles();
     return (
