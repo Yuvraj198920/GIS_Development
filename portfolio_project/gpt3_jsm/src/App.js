@@ -1,11 +1,12 @@
 import React from "react";
 import { Article, Brand, CTA, Navbar } from "./components";
 import { Blog, Features, Footer, Header, Possibility, WhatGPT3 } from './containers';
+import "./App.css";
 
 export default function App() {
     return (
         <div className="App">
-            <div className="gradient_bg">
+            <div className="gradient__bg">
                 <Navbar />
                 <Header />
             </div>
